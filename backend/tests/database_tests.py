@@ -12,6 +12,11 @@ from backend.store import Task, Store
 
 DB = Dbconnector()
 
+# mocked tasks
+task1 = Task("12346781326895423", "pomodoro project", "write a sample coding project",)
+task2 = Task("778906475648709", "learn flask", "read all the books on flask")
+task3 = Task("7579021236573678932", "teach python", "teach somebody how to use python")
+
 
 class TestDatabaseFunctionality:
     def test_connection(self):
@@ -24,15 +29,15 @@ class TestDatabaseFunctionality:
         assert True  # will error if table doesn't exist
 
     def test_taskid_gets_entered_in_database(self):
-        sample_taskid = "aiuopqewr1234"
-        sample_task = Task(
-            sample_taskid,
-            "pomodoro project",
-            "write a sample coding project to create a pomodoro timer",
-        )
         store = Store()
-        store.add_task(sample_task)
+        store.add_task(task1)
         taskids = DB.cursor.execute("""SELECT * FROM tasks;""").fetchall()
         tasklogs = DB.cursor.execute("""SELECT * FROM tasklog;""").fetchall()
-        assert sample_taskid in [i[0] for i in taskids]
-        assert sample_taskid in [i[0] for i in tasklogs]
+        assert task1.id in [i[0] for i in taskids]
+        assert task1.id in [i[0] for i in tasklogs]
+
+    # def test_retrieving_a_test_from_taskid(self):
+    #     store = Store()
+    #     store.add(task1)
+    #     store.add(task2)
+    # store.add(task3)

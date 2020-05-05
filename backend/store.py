@@ -2,7 +2,7 @@ from backend.create_database import Dbconnector
 from pathlib import Path
 from collections import namedtuple
 
-Task = namedtuple("Task", ["id", "short", "long"])
+Task = namedtuple("Task", ["id", "short", "long", "done"], defaults=[0])
 
 
 class Store:
@@ -23,11 +23,11 @@ class Store:
         tasks_script = """
                  INSERT INTO tasks VALUES (?,?,?);
          """
-        self.cursor.execute(tasks_script, task)
+        self.cursor.execute(tasks_script, (task.id, task.short, task.long))
 
         tasklog_script = """
                 INSERT INTO tasklog (taskid, finished) 
-                    VALUES (?, 0);
+                    VALUES (?, ?);
         """
-        self.cursor.execute(tasklog_script, (task.id,))
+        self.cursor.execute(tasklog_script, (task.id, task.done))
         self._commit()

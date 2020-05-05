@@ -1,14 +1,13 @@
 import sqlite3
-from pathlib import Path
 
 
 class Dbconnector:
-    def __init__(self, database: Path):
-        self.conn = sqlite3.connect(database=database)
+    def __init__(self):
+        self.conn = sqlite3.connect(database="./pomorodo.db")
         self.cursor = self.conn.cursor()
-        self._create_schema()
 
-    def _create_schema(self):
+    def load_schema(self) -> None:
+        """creates the tables from the schema"""
         script = """
                 BEGIN TRANSACTION;
                 DROP TABLE IF EXISTS tasks;
@@ -26,3 +25,7 @@ class Dbconnector:
                 COMMIT TRANSACTION;
         """
         self.cursor.executescript(script)
+
+    def commit(self) -> None:
+        """commits transactions"""
+        self.conn.commit()

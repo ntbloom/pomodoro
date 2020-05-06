@@ -3,7 +3,7 @@
 -for production systems database would be production server like Postgresql, etc. with mockups for test environments
 -in this case we just re-use the "production" sqlite file
 
-run test suite `python -m pytest database_tests.py`
+to run test suite, run `python -m pytest database_tests.py` in a terminal
 """
 
 from pathlib import Path
@@ -36,8 +36,11 @@ class TestDatabaseFunctionality:
         assert task1.id in [i[0] for i in taskids]
         assert task1.id in [i[0] for i in tasklogs]
 
-    # def test_retrieving_a_test_from_taskid(self):
-    #     store = Store()
-    #     store.add(task1)
-    #     store.add(task2)
-    # store.add(task3)
+    def test_finishing_a_task(self):
+        store = Store()
+        store.add_task(task2)
+        store.finish_task(task2.id)
+        finished = DB.cursor.execute(
+            """SELECT finished FROM tasklog WHERE taskid = ?""", [task2.id]
+        ).fetchone()[0]
+        assert finished == 1

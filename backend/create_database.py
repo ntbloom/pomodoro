@@ -19,7 +19,7 @@ class Dbconnector:
                 DROP TABLE IF EXISTS tasklog;
                 CREATE TABLE tasklog (
                     taskid TEXT,
-                    finished INTEGER, -- 0 = false, 1 = true
+                    done INTEGER, -- 0 = false, 1 = true
                     FOREIGN KEY(taskid) REFERENCES tasks(taskid)
                 );
                 COMMIT TRANSACTION;

@@ -41,7 +41,7 @@ class TestDatabaseFunctionality:
         task = task2
         store.add_task(task)
         finished = DB.cursor.execute(
-            """SELECT finished FROM tasklog WHERE taskid = ?""", [task.id]
+            """SELECT done FROM tasklog WHERE taskid = ?""", [task.id]
         ).fetchone()[0]
         assert finished == 0
 
@@ -51,6 +51,6 @@ class TestDatabaseFunctionality:
         store.add_task(task)
         store.finish_task(task.id)
         finished = DB.cursor.execute(
-            """SELECT finished FROM tasklog WHERE taskid = ?""", [task.id]
+            """SELECT done FROM tasklog WHERE taskid = ?""", [task.id]
         ).fetchone()[0]
         assert finished == 1

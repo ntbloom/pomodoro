@@ -2,7 +2,7 @@ from backend.create_database import Dbconnector
 from pathlib import Path
 from collections import namedtuple
 
-Task = namedtuple("Task", ["id", "short", "long", "done"], defaults=[0])
+Task = namedtuple("Task", ["id", "short", "desc", "done"], defaults=[0])
 
 
 class Store:
@@ -19,14 +19,14 @@ class Store:
         """adds task to database"""
         a = task.id
         b = task.short
-        c = task.long
+        c = task.desc
         tasks_script = """
                  INSERT INTO tasks VALUES (?,?,?);
          """
-        self.cursor.execute(tasks_script, (task.id, task.short, task.long))
+        self.cursor.execute(tasks_script, (task.id, task.short, task.desc))
 
         tasklog_script = """
-                INSERT INTO tasklog (taskid, finished) 
+                INSERT INTO tasklog (taskid, done) 
                     VALUES (?, ?);
         """
         self.cursor.execute(tasklog_script, (task.id, task.done))
@@ -37,9 +37,16 @@ class Store:
         self.cursor.execute(
             """
                 UPDATE tasklog
-                    SET finished = 1
+                    SET done = 1
                     WHERE taskid = ?;
         """,
             [taskid],
         )
         self._commit()
+
+    # @staticmethod
+    # def make_dict(task: Task) -> dict:
+    #     """restructures a namedtuple as a dictionary"""
+    #     new_dict = {
+    #         ""
+    #     }

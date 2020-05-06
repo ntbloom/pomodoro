@@ -8,7 +8,6 @@ Task = namedtuple("Task", ["id", "short", "desc", "done"], defaults=[0])
 class Store:
     def __init__(self):
         self.db: Dbconnector = Dbconnector()
-        self.db.load_schema()
         self.conn = self.db.conn
         self.cursor = self.conn.cursor()
 

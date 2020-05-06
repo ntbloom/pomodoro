@@ -8,11 +8,6 @@ class Dbconnector:
         self.conn = sqlite3.connect(database=DATABASE)
         self.cursor = self.conn.cursor()
 
-    @staticmethod
-    def create_new_database_file() -> None:
-        """deletes the old database file and creates a new one"""
-        pass
-
     def load_schema(self) -> None:
         """creates the tables from the schema"""
         script = """

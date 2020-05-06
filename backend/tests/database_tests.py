@@ -22,7 +22,6 @@ task3 = Task("7579021236573678932", "teach python", "teach somebody how to use p
 class TestDatabaseFunctionality:
     @pytest.fixture(scope="function", autouse=True)
     def make_clean_database_each_time(self):
-        Dbconnector.create_new_database_file()
         DB.load_schema()
         yield
 
@@ -82,3 +81,7 @@ class TestDatabaseFunctionality:
         expected_tasks = [store.make_dict(i) for i in test_tasks]
         actual_tasks = store.get_all_tasks()
         assert actual_tasks == expected_tasks
+
+    # def test_get_task_info(self):
+    #     store = Store()
+    #     test_tasks =

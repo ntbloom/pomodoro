@@ -1,4 +1,4 @@
-from backend.create_database import Dbconnector
+from database.store.create_database import Dbconnector
 from collections import namedtuple
 from typing import List
 
@@ -6,16 +6,17 @@ Task = namedtuple("Task", ["id", "short", "desc", "done"], defaults=[0])
 
 
 class Store:
-    def __init__(self):
-        self.db: Dbconnector = Dbconnector()
+    def __init__(self, database: str):
+        self.database = database
+        self.db: Dbconnector = Dbconnector(self.database)
         self.conn = self.db.conn
         self.cursor = self.conn.cursor()
 
     def _commit(self) -> None:
         self.db.commit()
 
-    def _close(self) -> None:
-        self.conn.close()
+    def close(self) -> None:
+        self.db.close()
 
     def add_task(self, task: Task) -> None:
         """adds task to database"""
@@ -31,7 +32,7 @@ class Store:
         self.cursor.execute(tasklog_script, (task.id, task.done))
         self._commit()
 
-    def finish_task(self, taskid: str) -> None:
+    def mark_task_as_finished(self, taskid: str) -> None:
         """marks a task as finished"""
         self.cursor.execute(
             """
@@ -87,19 +88,3 @@ class Store:
         """
         raw_info = self.cursor.execute(script, (taskid,)).fetchall()[0]
         return self._parse_raw_query_results(raw_info)
-
-
-if __name__ == "__main__":
-    store = Store()
-
-    # mocked tasks
-    task1 = Task(
-        "12346781326895423", "pomodoro project", "write a sample coding project",
-    )
-    task2 = Task("778906475648709", "learn flask", "read all the books on flask")
-    task3 = Task(
-        "7579021236573678932", "teach python", "teach somebody how to use python"
-    )
-    tasks = [task1, task2, task3]
-    for i in tasks:
-        store.add_task(i)

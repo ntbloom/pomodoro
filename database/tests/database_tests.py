@@ -6,11 +6,17 @@
 to run test suite, run `python -m pytest database_tests.py` in a terminal
 """
 
-from backend.create_database import Dbconnector
-from backend.store import Task, Store
-import pytest
 
-DB = Dbconnector()
+from database.store.create_database import Dbconnector
+from database.store.store import Task, Store
+import pytest
+import requests
+from flask import jsonify
+from pathlib import Path
+
+DATABASE = Path("./test_database.db")
+DB = Dbconnector(DATABASE)
+localhost = "http://127.0.0.1:5000"
 
 # mocked tasks -- in production would use either greater qty of tasks or use property-based testing
 task1 = Task("12346781326895423", "pomodoro project", "write a sample coding project",)
@@ -34,7 +40,7 @@ class TestStoreClass:
         assert True  # will error if table doesn't exist
 
     def test_taskid_gets_entered_in_database(self):
-        store = Store()
+        store = Store(DATABASE)
         store.add_task(task1)
         taskids = DB.cursor.execute("""SELECT * FROM tasks;""").fetchall()
         tasklogs = DB.cursor.execute("""SELECT * FROM tasklog;""").fetchall()
@@ -43,7 +49,7 @@ class TestStoreClass:
         assert task1.id in [i[0] for i in tasklogs]
 
     def test_tasks_default_to_unfinished(self):
-        store = Store()
+        store = Store(DATABASE)
         task = task2
         store.add_task(task)
         finished = DB.cursor.execute(
@@ -52,17 +58,17 @@ class TestStoreClass:
         assert finished == 0
 
     def test_finishing_a_task(self):
-        store = Store()
+        store = Store(DATABASE)
         task = task3
         store.add_task(task)
-        store.finish_task(task.id)
+        store.mark_task_as_finished(task.id)
         finished = DB.cursor.execute(
             """SELECT done FROM tasklog WHERE taskid = ?""", [task.id]
         ).fetchone()[0]
         assert finished == 1
 
     def test_make_dict(self):
-        store = Store()
+        store = Store(DATABASE)
         task = task1
         new_dict = {
             "taskid": task.id,
@@ -73,7 +79,7 @@ class TestStoreClass:
         assert store.make_dict(task) == new_dict
 
     def test_get_all_tasks(self):
-        store = Store()
+        store = Store(DATABASE)
         test_tasks = [task1, task2, task3]
         for i in test_tasks:
             store.add_task(i)
@@ -82,10 +88,25 @@ class TestStoreClass:
         assert actual_tasks == expected_tasks
 
     def test_get_task_info(self):
-        store = Store()
+        store = Store(DATABASE)
         tasks = [task1, task2, task3]
         for i in tasks:
             store.add_task(i)
         expected_task_info = store.make_dict(task1)
         actual_task_info = store.get_task_info(task1.id)
         assert actual_task_info == expected_task_info
+
+
+class TestFlask:
+    def test_basic_connection(self):
+        r = requests.get(f"{localhost}")
+        r.raise_for_status()
+        response = r.text
+        assert response == "hello world"
+
+    def test_args_dot_get_method(self):
+        message = "sample-for-testing"
+        r = requests.get(f"{localhost}/get-task/?taskid={message}")
+        r.raise_for_status()
+        response = r.text
+        assert response == "passing connection test"

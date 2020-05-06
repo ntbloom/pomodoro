@@ -3,7 +3,7 @@ import sqlite3
 
 class Dbconnector:
     def __init__(self):
-        self.conn = sqlite3.connect(database="./pomorodo.db")
+        self.conn = sqlite3.connect(database="./pomodoro.db")
         self.cursor = self.conn.cursor()
 
     def load_schema(self) -> None:

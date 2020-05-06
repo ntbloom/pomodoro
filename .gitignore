@@ -6,3 +6,4 @@ npm-debug.log*
 *.db
 venv/
 .idea/
+__pycache__

@@ -66,3 +66,20 @@ class Store:
         """
         tasks = self.cursor.execute(script).fetchall()
         return tasks
+
+
+if __name__ == "__main__":
+    store = Store()
+
+    # mocked tasks
+    task1 = Task(
+        "12346781326895423", "pomodoro project", "write a sample coding project",
+    )
+    task2 = Task("778906475648709", "learn flask", "read all the books on flask")
+    task3 = Task(
+        "7579021236573678932", "teach python", "teach somebody how to use python"
+    )
+    tasks = [task1, task2, task3]
+    for i in tasks:
+        store.add_task(i)
+    print("Added sample tasks to database")

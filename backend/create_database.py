@@ -13,7 +13,7 @@ class Dbconnector:
                 DROP TABLE IF EXISTS tasks;
                 CREATE TABLE tasks (
                     taskid TEXT PRIMARY KEY,
-                    task TEXT NOT NULL,
+                    short TEXT NOT NULL,
                     desc TEXT NOT NULL 
                 );
                 DROP TABLE IF EXISTS tasklog;

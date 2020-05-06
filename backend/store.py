@@ -15,6 +15,9 @@ class Store:
     def _commit(self) -> None:
         self.db.commit()
 
+    def _close(self) -> None:
+        self.conn.close()
+
     def add_task(self, task: Task) -> None:
         """adds task to database"""
         a = task.id
@@ -54,3 +57,12 @@ class Store:
             "done": task.done,
         }
         return new_dict
+
+    def get_all_tasks(self):
+        script = """
+            SELECT tasks.taskid, tasks.short, tasks.desc, tasklog.done
+            FROM tasks
+            INNER JOIN tasklog on tasklog.taskid = tasks.taskid;
+        """
+        tasks = self.cursor.execute(script).fetchall()
+        return tasks

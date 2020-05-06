@@ -25,6 +25,7 @@ class Dbconnector:
                 COMMIT TRANSACTION;
         """
         self.cursor.executescript(script)
+        self.commit()
 
     def commit(self) -> None:
         """commits transactions"""

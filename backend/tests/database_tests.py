@@ -65,3 +65,11 @@ class TestDatabaseFunctionality:
             "done": task.done,
         }
         assert store.make_dict(task) == new_dict
+
+    # def test_get_all_tasks(self):
+    #     store = Store()
+    #     store._close()
+    #     test_tasks = [task1, task2, task3]
+    #     expected_tasks = [store.make_dict(i) for i in test_tasks]
+    #     actual_tasks = store.get_all_tasks()
+    #     assert expected_tasks == actual_tasks

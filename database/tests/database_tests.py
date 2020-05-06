@@ -3,7 +3,7 @@
 -for production systems database would be production server like Postgresql, etc. with mockups for test environments
 -in this case we just re-use the "production" sqlite file
 
-to run test suite, run `python -m pytest database_tests.py` in a terminal
+to run test suite, run `python -m pytest *.py` in a terminal
 """
 
 
@@ -11,9 +11,9 @@ from datastore.create_database import Dbconnector
 from datastore.store import Task, Store
 import pytest
 import requests
-from flask import jsonify
 from pathlib import Path
 import os
+import json
 
 filename = Path("../test_database.db")
 DATABASE = os.path.abspath(filename)
@@ -73,7 +73,7 @@ class TestStoreClass:
         store = Store(DATABASE)
         task = task1
         new_dict = {
-            "taskid": task.id,
+            "id": task.id,
             "short": task.short,
             "desc": task.desc,
             "done": task.done,
@@ -89,6 +89,15 @@ class TestStoreClass:
         actual_tasks = store.get_all_tasks()
         assert actual_tasks == expected_tasks
 
+    def test_get_all_taskids(self):
+        store = Store(DATABASE)
+        test_tasks = [task1, task2, task3]
+        for i in test_tasks:
+            store.add_task(i)
+        expected_taskids = {task1.id, task2.id, task3.id}
+        actual_taskids = store.get_all_taskids()
+        assert actual_taskids == expected_taskids
+
     def test_get_task_info(self):
         store = Store(DATABASE)
         tasks = [task1, task2, task3]
@@ -98,23 +107,10 @@ class TestStoreClass:
         actual_task_info = store.get_task_info(task1.id)
         assert actual_task_info == expected_task_info
 
-
-class TestFlask:
-    def test_basic_connection(self):
-        r = requests.get(f"{localhost}/test-connection/?test=basic-connection")
-        r.raise_for_status()
-        response = r.text
-        assert response == "hello world"
-
-    def test_args_dot_get_method(self):
-        message = "sample-for-testing"
-        r = requests.get(f"{localhost}/get-task/?taskid={message}")
-        r.raise_for_status()
-        response = r.text
-        assert response == "passing connection test"
-
-    def test_flask_instantiating_Store_class(self):
-        r = requests.get(f"{localhost}/test-connection/?test=database")
-        # r.raise_for_status()
-        response = r.text
-        assert response == "no errors thrown in Store instantiation"
+    def test_create_task_from_json(self):
+        rawjson = json.dumps(
+            {"id": "123", "short": "this is short", "desc": "this is longer", "done": 0}
+        )
+        expected = Task("123", "this is short", "this is longer", 0)
+        actual = Store.create_task_from_json(rawjson)
+        assert actual == expected

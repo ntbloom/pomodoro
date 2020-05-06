@@ -1,7 +1,8 @@
 from create_database import Dbconnector
 from collections import namedtuple
-from typing import List
+from typing import List, Set
 from pathlib import Path
+import json
 
 Task = namedtuple("Task", ["id", "short", "desc", "done"], defaults=[0])
 
@@ -48,7 +49,7 @@ class Store:
     def make_dict(task: Task) -> dict:
         """restructures a namedtuple as a dictionary"""
         new_dict = {
-            "taskid": task.id,
+            "id": task.id,
             "short": task.short,
             "desc": task.desc,
             "done": task.done,
@@ -59,12 +60,22 @@ class Store:
     def _parse_raw_query_results(results: List[tuple]) -> dict:
         """helper method for turning raw query results into structured dict"""
         ordered_results = {
-            "taskid": results[0],
+            "id": results[0],
             "short": results[1],
             "desc": results[2],
             "done": results[3],
         }
         return ordered_results
+
+    @staticmethod
+    def create_task_from_json(data: json) -> Task:
+        """converts raw json into a Task object"""
+        data_as_dict = json.loads(data)
+        id = data_as_dict["id"]
+        short = data_as_dict["short"]
+        desc = data_as_dict["desc"]
+        done = data_as_dict["done"]
+        return Task(id, short, desc, done)
 
     def get_all_tasks(self) -> List[dict]:
         script = """
@@ -77,6 +88,19 @@ class Store:
         for i in raw_data:
             all_tasks.append(self._parse_raw_query_results(i))
         return all_tasks
+
+    def get_all_taskids(self) -> Set:
+        """returns a set of all taskids"""
+        script = """
+                SELECT taskid
+                FROM tasks;
+        """
+        taskids = set()
+        raw_data = self.cursor.execute(script).fetchall()
+        for entry in raw_data:
+            taskids.add(entry[0])
+
+        return taskids
 
     def get_task_info(self, taskid: str) -> dict:
         """returns relevant info about a task from its taskid"""

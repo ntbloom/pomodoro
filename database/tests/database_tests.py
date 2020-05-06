@@ -13,8 +13,10 @@ import pytest
 import requests
 from flask import jsonify
 from pathlib import Path
+import os
 
-DATABASE = Path("./test_database.db")
+filename = Path("./test_database.db")
+DATABASE = os.path.abspath(filename)
 DB = Dbconnector(DATABASE)
 localhost = "http://127.0.0.1:5000"
 
@@ -99,7 +101,7 @@ class TestStoreClass:
 
 class TestFlask:
     def test_basic_connection(self):
-        r = requests.get(f"{localhost}")
+        r = requests.get(f"{localhost}/test-connection/?test=hello")
         r.raise_for_status()
         response = r.text
         assert response == "hello world"
@@ -110,3 +112,9 @@ class TestFlask:
         r.raise_for_status()
         response = r.text
         assert response == "passing connection test"
+
+    # def test_flask_connection_to_database(self):
+    #     r = requests.get(f"{localhost}/test-connection/?test=database")
+    #     # r.raise_for_status()
+    #     response = r.text
+    #     assert response == "2"

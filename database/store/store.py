@@ -1,14 +1,14 @@
 from database.store.create_database import Dbconnector
 from collections import namedtuple
 from typing import List
+from pathlib import Path
 
 Task = namedtuple("Task", ["id", "short", "desc", "done"], defaults=[0])
 
 
 class Store:
-    def __init__(self, database: str):
-        self.database = database
-        self.db: Dbconnector = Dbconnector(self.database)
+    def __init__(self, database: Path):
+        self.db: Dbconnector = Dbconnector(database)
         self.conn = self.db.conn
         self.cursor = self.conn.cursor()
 

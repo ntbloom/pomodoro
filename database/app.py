@@ -1,9 +1,9 @@
-from database.store.store import Store, Task
+from datastore.store import Store, Task
 from flask import Flask, request, jsonify
 from pathlib import Path
 import os
 
-filepath = Path("./tests/test_database.db")
+filepath = Path("./test_database.db")
 DATABASE = os.path.abspath(filepath)
 print(f"DATABASE={DATABASE}")
 app = Flask(__name__)
@@ -15,7 +15,8 @@ def hello() -> str:
     if test == "basic-connection":
         return "hello world"
     if test == "database":
-        return "connected to database"
+        store = Store(DATABASE)
+        return "no errors thrown in Store instantiation" 
     return ""
 
 

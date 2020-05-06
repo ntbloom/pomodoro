@@ -7,15 +7,15 @@ to run test suite, run `python -m pytest database_tests.py` in a terminal
 """
 
 
-from database.store.create_database import Dbconnector
-from database.store.store import Task, Store
+from datastore.create_database import Dbconnector
+from datastore.store import Task, Store
 import pytest
 import requests
 from flask import jsonify
 from pathlib import Path
 import os
 
-filename = Path("./test_database.db")
+filename = Path("../test_database.db")
 DATABASE = os.path.abspath(filename)
 DB = Dbconnector(DATABASE)
 localhost = "http://127.0.0.1:5000"
@@ -113,8 +113,8 @@ class TestFlask:
         response = r.text
         assert response == "passing connection test"
 
-    def test_flask_connection_to_database(self):
+    def test_flask_instantiating_Store_class(self):
         r = requests.get(f"{localhost}/test-connection/?test=database")
         # r.raise_for_status()
         response = r.text
-        assert response == "2"
+        assert response == "no errors thrown in Store instantiation"

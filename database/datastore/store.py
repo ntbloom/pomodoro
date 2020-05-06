@@ -1,4 +1,4 @@
-from database.store.create_database import Dbconnector
+from create_database import Dbconnector
 from collections import namedtuple
 from typing import List
 from pathlib import Path

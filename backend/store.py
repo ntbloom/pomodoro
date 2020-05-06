@@ -19,9 +19,6 @@ class Store:
 
     def add_task(self, task: Task) -> None:
         """adds task to database"""
-        a = task.id
-        b = task.short
-        c = task.desc
         tasks_script = """
                  INSERT INTO tasks VALUES (?,?,?);
          """
@@ -57,19 +54,39 @@ class Store:
         }
         return new_dict
 
+    @staticmethod
+    def _parse_raw_query_results(results: List[tuple]) -> dict:
+        """helper method for turning raw query results into structured dict"""
+        ordered_results = {
+            "taskid": results[0],
+            "short": results[1],
+            "desc": results[2],
+            "done": results[3],
+        }
+        return ordered_results
+
     def get_all_tasks(self) -> List[dict]:
         script = """
-            SELECT tasks.taskid, short, desc, done
-            FROM tasks
-            INNER JOIN tasklog ON tasks.taskid = tasklog.taskid;
+                SELECT tasks.taskid, short, desc, done
+                FROM tasks
+                INNER JOIN tasklog ON tasks.taskid = tasklog.taskid;
         """
         raw_data = self.cursor.execute(script).fetchall()
         all_tasks = []
         for i in raw_data:
-            all_tasks.append(
-                {"taskid": i[0], "short": i[1], "desc": i[2], "done": i[3]}
-            )
+            all_tasks.append(self._parse_raw_query_results(i))
         return all_tasks
+
+    def get_task_info(self, taskid: str) -> dict:
+        """returns relevant info about a task from its taskid"""
+        script = """
+                SELECT tasks.taskid, short, desc, done
+                FROM tasks
+                INNER JOIN tasklog ON tasks.taskid = tasklog.taskid
+                WHERE tasks.taskid = ?;
+        """
+        raw_info = self.cursor.execute(script, (taskid,)).fetchall()[0]
+        return self._parse_raw_query_results(raw_info)
 
 
 if __name__ == "__main__":
@@ -86,4 +103,3 @@ if __name__ == "__main__":
     tasks = [task1, task2, task3]
     for i in tasks:
         store.add_task(i)
-    print("Added sample tasks to database")

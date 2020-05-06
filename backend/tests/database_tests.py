@@ -9,17 +9,16 @@ to run test suite, run `python -m pytest database_tests.py` in a terminal
 from backend.create_database import Dbconnector
 from backend.store import Task, Store
 import pytest
-from time import sleep
 
 DB = Dbconnector()
 
-# mocked tasks
+# mocked tasks -- in production would use either greater qty of tasks or use property-based testing
 task1 = Task("12346781326895423", "pomodoro project", "write a sample coding project",)
 task2 = Task("778906475648709", "learn flask", "read all the books on flask")
 task3 = Task("7579021236573678932", "teach python", "teach somebody how to use python")
 
 
-class TestDatabaseFunctionality:
+class TestStoreClass:
     @pytest.fixture(scope="function", autouse=True)
     def make_clean_database_each_time(self):
         DB.load_schema()
@@ -82,6 +81,11 @@ class TestDatabaseFunctionality:
         actual_tasks = store.get_all_tasks()
         assert actual_tasks == expected_tasks
 
-    # def test_get_task_info(self):
-    #     store = Store()
-    #     test_tasks =
+    def test_get_task_info(self):
+        store = Store()
+        tasks = [task1, task2, task3]
+        for i in tasks:
+            store.add_task(i)
+        expected_task_info = store.make_dict(task1)
+        actual_task_info = store.get_task_info(task1.id)
+        assert actual_task_info == expected_task_info

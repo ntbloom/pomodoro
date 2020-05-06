@@ -12,8 +12,10 @@ app = Flask(__name__)
 @app.route("/test-connection/", methods=["GET"])
 def hello() -> str:
     test = request.args.get("test")
-    if test == "hello":
+    if test == "basic-connection":
         return "hello world"
+    if test == "database":
+        return "connected to database"
     return ""
 
 

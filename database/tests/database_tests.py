@@ -101,7 +101,7 @@ class TestStoreClass:
 
 class TestFlask:
     def test_basic_connection(self):
-        r = requests.get(f"{localhost}/test-connection/?test=hello")
+        r = requests.get(f"{localhost}/test-connection/?test=basic-connection")
         r.raise_for_status()
         response = r.text
         assert response == "hello world"
@@ -113,8 +113,8 @@ class TestFlask:
         response = r.text
         assert response == "passing connection test"
 
-    # def test_flask_connection_to_database(self):
-    #     r = requests.get(f"{localhost}/test-connection/?test=database")
-    #     # r.raise_for_status()
-    #     response = r.text
-    #     assert response == "2"
+    def test_flask_connection_to_database(self):
+        r = requests.get(f"{localhost}/test-connection/?test=database")
+        # r.raise_for_status()
+        response = r.text
+        assert response == "2"

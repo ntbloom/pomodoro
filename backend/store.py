@@ -44,9 +44,13 @@ class Store:
         )
         self._commit()
 
-    # @staticmethod
-    # def make_dict(task: Task) -> dict:
-    #     """restructures a namedtuple as a dictionary"""
-    #     new_dict = {
-    #         ""
-    #     }
+    @staticmethod
+    def make_dict(task: Task) -> dict:
+        """restructures a namedtuple as a dictionary"""
+        new_dict = {
+            "taskid": task.id,
+            "short": task.short,
+            "desc": task.desc,
+            "done": task.done,
+        }
+        return new_dict

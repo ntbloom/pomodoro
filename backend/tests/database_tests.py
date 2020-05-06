@@ -54,3 +54,14 @@ class TestDatabaseFunctionality:
             """SELECT done FROM tasklog WHERE taskid = ?""", [task.id]
         ).fetchone()[0]
         assert finished == 1
+
+    def test_make_dict(self):
+        store = Store()
+        task = task1
+        new_dict = {
+            "taskid": task.id,
+            "short": task.short,
+            "desc": task.desc,
+            "done": task.done,
+        }
+        assert store.make_dict(task) == new_dict

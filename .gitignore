@@ -7,3 +7,5 @@ npm-debug.log*
 venv/
 .idea/
 __pycache__
+*.db-journal
+.pytest_cache/

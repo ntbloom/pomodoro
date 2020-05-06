@@ -1,6 +1,6 @@
 from backend.create_database import Dbconnector
-from pathlib import Path
 from collections import namedtuple
+from typing import List
 
 Task = namedtuple("Task", ["id", "short", "desc", "done"], defaults=[0])
 
@@ -58,14 +58,19 @@ class Store:
         }
         return new_dict
 
-    def get_all_tasks(self):
+    def get_all_tasks(self) -> List[dict]:
         script = """
-            SELECT tasks.taskid, tasks.short, tasks.desc, tasklog.done
+            SELECT tasks.taskid, short, desc, done
             FROM tasks
-            INNER JOIN tasklog on tasklog.taskid = tasks.taskid;
+            INNER JOIN tasklog ON tasks.taskid = tasklog.taskid;
         """
-        tasks = self.cursor.execute(script).fetchall()
-        return tasks
+        raw_data = self.cursor.execute(script).fetchall()
+        all_tasks = []
+        for i in raw_data:
+            all_tasks.append(
+                {"taskid": i[0], "short": i[1], "desc": i[2], "done": i[3]}
+            )
+        return all_tasks
 
 
 if __name__ == "__main__":

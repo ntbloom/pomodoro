@@ -1,10 +1,17 @@
 import sqlite3
 
+DATABASE = "./database.db"
+
 
 class Dbconnector:
     def __init__(self):
-        self.conn = sqlite3.connect(database="./pomodoro.db")
+        self.conn = sqlite3.connect(database=DATABASE)
         self.cursor = self.conn.cursor()
+
+    @staticmethod
+    def create_new_database_file() -> None:
+        """deletes the old database file and creates a new one"""
+        pass
 
     def load_schema(self) -> None:
         """creates the tables from the schema"""
@@ -19,7 +26,7 @@ class Dbconnector:
                 DROP TABLE IF EXISTS tasklog;
                 CREATE TABLE tasklog (
                     taskid TEXT,
-                    done INTEGER, -- 0 = false, 1 = true
+                    done INTEGER, -- 0 and 1 for false and true
                     FOREIGN KEY(taskid) REFERENCES tasks(taskid)
                 );
                 COMMIT TRANSACTION;

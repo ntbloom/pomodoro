@@ -37,7 +37,7 @@ class Store:
         self.cursor.execute(
             """
                 UPDATE tasklog
-                    SET finished = 0
+                    SET finished = 1
                     WHERE taskid = ?;
         """,
             [taskid],

@@ -36,11 +36,21 @@ class TestDatabaseFunctionality:
         assert task1.id in [i[0] for i in taskids]
         assert task1.id in [i[0] for i in tasklogs]
 
+    def test_tasks_default_to_unfinished(self):
+        store = Store()
+        task = task2
+        store.add_task(task)
+        finished = DB.cursor.execute(
+            """SELECT finished FROM tasklog WHERE taskid = ?""", [task.id]
+        ).fetchone()[0]
+        assert finished == 0
+
     def test_finishing_a_task(self):
         store = Store()
-        store.add_task(task2)
-        store.finish_task(task2.id)
+        task = task3
+        store.add_task(task)
+        store.finish_task(task.id)
         finished = DB.cursor.execute(
-            """SELECT finished FROM tasklog WHERE taskid = ?""", [task2.id]
+            """SELECT finished FROM tasklog WHERE taskid = ?""", [task.id]
         ).fetchone()[0]
         assert finished == 1

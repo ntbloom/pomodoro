@@ -1,5 +1,6 @@
 from datastore.store import Store, Task
-from flask import Flask, request, Request, Response
+from flask import Flask, request, Request, Response, jsonify
+from flask_cors import CORS, cross_origin
 import json
 from pathlib import Path
 import os
@@ -7,7 +8,9 @@ import os
 filepath = Path("./test_database.db")
 DATABASE = os.path.abspath(filepath)
 print(f"DATABASE={DATABASE}")
+
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/test-connection/", methods=["GET"])
@@ -35,14 +38,17 @@ def get_task() -> json:
         return "passing connection test"
     if taskid not in all_tasks:
         return Response(status=404)
-    task = json.dumps(store.get_task_info(taskid))
+    task = store.get_task_info(taskid)
     store.close()
-    return task
+    return jsonify(task)
 
 
-@app.route("/add-task/", methods=["POST"])
+@app.route("/add-task/", methods=["POST", "GET"])
+@cross_origin()
 def add_task() -> Response:
+    print(f"\n\n{request.headers}\n\n{request.is_json}")
     payload = request.get_json()
+    print(f"\n\nPAYLOAD={payload}\n\n")
     store = Store(DATABASE)
     task = store.create_task_from_json(payload)
     store.add_task(task)
@@ -73,9 +79,8 @@ def finish_task() -> Response:
 def get_all_tasks() -> json:
     store = Store(DATABASE)
     all_tasks = store.get_all_tasks()
-    response = json.dumps({"tasks": all_tasks})
-    print(f"response={response}")
-    return response
+    response = {"tasks": all_tasks}
+    return jsonify(response)
 
 
 if __name__ == "__main__":

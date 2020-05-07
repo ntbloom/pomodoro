@@ -70,7 +70,11 @@ class Store:
     @staticmethod
     def create_task_from_json(data: json) -> Task:
         """converts raw json into a Task object"""
-        data_as_dict = json.loads(data)
+        data_as_dict = {} 
+        if type(data) is dict:
+            data_as_dict = data
+        else:
+            data_as_dict = json.loads(data)
         id = data_as_dict["id"]
         short = data_as_dict["short"]
         desc = data_as_dict["desc"]

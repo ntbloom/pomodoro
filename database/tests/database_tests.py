@@ -15,7 +15,7 @@ from pathlib import Path
 import os
 import json
 
-filename = Path("../test_database.db")
+filename = Path("./database.db")
 DATABASE = os.path.abspath(filename)
 DB = Dbconnector(DATABASE)
 localhost = "http://127.0.0.1:5000"

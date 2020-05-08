@@ -39,5 +39,5 @@ class Dbconnector:
 
 
 if __name__ == "__main__":
-    d = Dbconnector()
+    d = Dbconnector("./database.db")
     d.load_schema()

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import os
 
-filepath = Path("./test_database.db")
+filepath = Path("./database.db")
 DATABASE = os.path.abspath(filepath)
 print(f"DATABASE={DATABASE}")
 

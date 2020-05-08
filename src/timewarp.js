@@ -1,6 +1,6 @@
 // speeds up time for faster development cycles
 
-const production = false;
+const production = true;
 let timewarp;
 if (production) {
   timewarp = {

@@ -44,7 +44,7 @@ To run back end test suite, run pytest from the database directory with the
 Flask development server running:
 
 ```console
-(venv) user@host:~/pomodoro/database$ python -m tests/*.py
+(venv) user@host:~/pomodoro/database$ python -m pytest tests/*.py
 ```
 
 <br>

@@ -1,6 +1,8 @@
 # Pomodoro Timer
 
-Dummy app for implementing "Pomodoro Technique"
+Dummy app for implementing "Pomodoro Technique". 25 minutes working, 5 minutes
+rest. The app tracks what you've finished or not finished and runs in an infinite
+loop until you get tired of working (hasn't happened yet).
 
 
 ## Description of technology
@@ -19,7 +21,7 @@ quickly creating unique IDs for each task that gets sent to the database.
 
 ## Build Steps
 
-requires Python 3.8, nodejs 12.16+
+requires Python 3.8+ (including python3-venv), nodejs 12.16+
 
 1. enable the back end:
 - navigate to the `database` directory and install backend dependencies 
@@ -45,6 +47,8 @@ Flask development server running:
 (venv) user@host:~/pomodoro/database$ python -m tests/*.py
 ```
 
+<br>
+
 2. enable the front end:
 - navigate to top-level directory and install javascript dependencies
 - run webpack development server
@@ -52,5 +56,7 @@ Flask development server running:
 ```console
 user@host:~/pomodoro$ npm install && npm run start
 ```
+
+<br>
 
 3. With both severs running, navigate to [localhost:3000](http://localhost:3000) to view app

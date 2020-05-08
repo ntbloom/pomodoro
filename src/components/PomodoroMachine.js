@@ -62,7 +62,6 @@ class PomodoroMachine extends React.Component {
     );
     const results = <Results updateMachine={this.updateMachine} />;
     const entries = <Entries updateMachine={this.updateMachine} />;
-    const whoops = <p id="whoops">Error: you should not be here</p>;
 
     const childComponent = this.state.childComponent;
     switch (childComponent) {
@@ -77,7 +76,7 @@ class PomodoroMachine extends React.Component {
       case "Next":
         return next;
       default:
-        return whoops;
+        return "Entries";
     }
   }
 }
